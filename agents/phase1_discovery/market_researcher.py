@@ -14,7 +14,7 @@ class MarketResearcher(BaseAgent):
     development, and competitive differentiation strategy.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.MARKET_RESEARCHER,
             name="Market Researcher",

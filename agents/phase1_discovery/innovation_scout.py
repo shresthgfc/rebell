@@ -14,7 +14,7 @@ class InnovationScout(BaseAgent):
     to evaluate emerging tech, AI/ML opportunities, and modern patterns.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.INNOVATION_SCOUT,
             name="Innovation Scout",

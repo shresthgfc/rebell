@@ -14,7 +14,7 @@ class ReleaseManager(BaseAgent):
     rollback procedures, and go/no-go criteria.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.RELEASE_MANAGER,
             name="Release Manager",

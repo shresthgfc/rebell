@@ -2,7 +2,7 @@
 
 A complete software development organization powered by **25 Claude sub-agents** that collaborate, debate, and refine work through 5 phases — from brainstorming to implementation review.
 
-Each agent is a **real Claude API call** with a specialized system prompt. Agents don't just generate output — they **challenge each other** in structured debate rounds until consensus emerges.
+Each agent runs via the **`claude` CLI** (Claude Code) — no API key needed. Agents don't just generate output — they **challenge each other** in structured debate rounds until consensus emerges.
 
 ## Architecture
 
@@ -90,11 +90,13 @@ This means a full pipeline run with 3 debate rounds invokes Claude **hundreds of
 
 ## Quick Start
 
-### Install
+### Prerequisites
+
+Just have **Claude Code** (`claude`) installed on your terminal. No API key needed.
 
 ```bash
-pip install anthropic
-export ANTHROPIC_API_KEY="your-api-key"
+# Verify claude CLI is available
+claude --version
 ```
 
 ### CLI Usage
@@ -114,11 +116,13 @@ python run.py \
   -r "Build a CRM system" \
   -n "MyCRM" \
   -p full \
-  -m claude-sonnet-4-6 \
+  -m opus \
   --debate-rounds 2 \
   --budget enterprise \
   --timeline standard \
   -o ./output/mycrm
+
+# Available models: sonnet (default), opus, haiku
 ```
 
 ### Programmatic Usage
@@ -128,7 +132,7 @@ from pipeline.factory import PipelineFactory
 
 pipeline = PipelineFactory.create(
     preset="full",
-    model="claude-sonnet-4-6",
+    model="sonnet",  # or "opus", "haiku"
     max_debate_rounds=2,
 )
 

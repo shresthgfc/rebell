@@ -14,7 +14,7 @@ class TechLead(BaseAgent):
     dependency graphs, and work breakdown structures.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.TECH_LEAD,
             name="Tech Lead",

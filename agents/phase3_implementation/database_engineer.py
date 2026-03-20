@@ -14,7 +14,7 @@ class DatabaseEngineer(BaseAgent):
     optimization plans, and data access layer implementations.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.DATABASE_ENGINEER,
             name="Database Engineer",

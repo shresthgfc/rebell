@@ -14,7 +14,7 @@ class PerformanceEngineer(BaseAgent):
     and performance budgets.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.PERFORMANCE_ENGINEER,
             name="Performance Engineer",

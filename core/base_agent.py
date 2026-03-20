@@ -1,17 +1,16 @@
-"""Base Claude sub-agent class — every agent is a real Claude API call."""
+"""Base Claude sub-agent class — every agent runs via `claude` CLI."""
 
 from __future__ import annotations
 
 import json
 import logging
+import subprocess
 import time
 import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
-
-import anthropic
 
 logger = logging.getLogger(__name__)
 
@@ -54,42 +53,6 @@ class AgentRole(Enum):
     STAKEHOLDER_LIAISON = "stakeholder_liaison"
 
 
-# JSON schema for structured agent output
-AGENT_OUTPUT_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "analysis": {
-            "type": "string",
-            "description": "The agent's detailed analysis and recommendations",
-        },
-        "confidence": {
-            "type": "number",
-            "description": "Confidence level from 0.0 to 1.0",
-        },
-        "artifacts": {
-            "type": "object",
-            "description": "Structured deliverables from this agent",
-        },
-        "concerns": {
-            "type": "array",
-            "items": {"type": "string"},
-            "description": "Risks, issues, or concerns identified",
-        },
-        "suggestions": {
-            "type": "array",
-            "items": {"type": "string"},
-            "description": "Actionable suggestions for improvement",
-        },
-        "dependencies": {
-            "type": "array",
-            "items": {"type": "string"},
-            "description": "Dependencies on other agents or external factors",
-        },
-    },
-    "required": ["analysis", "confidence", "artifacts", "concerns", "suggestions"],
-}
-
-
 @dataclass
 class AgentResponse:
     """Structured response from a Claude sub-agent."""
@@ -123,13 +86,44 @@ class AgentResponse:
         }
 
 
-class BaseAgent(ABC):
-    """Abstract base class — each sub-agent calls Claude API directly.
+def invoke_claude_cli(prompt: str, system_prompt: str, model: str = "sonnet") -> str:
+    """Invoke the `claude` CLI as a sub-agent.
 
-    Every agent is a real Claude sub-agent with its own system prompt,
-    conversation history, and structured output parsing. The agent calls
-    the Anthropic API, parses the JSON response, and returns a structured
-    AgentResponse.
+    Runs: claude -p "prompt" --model <model> --system-prompt "system_prompt"
+    Returns the raw text output from Claude.
+    """
+    cmd = [
+        "claude",
+        "-p", prompt,
+        "--model", model,
+        "--output-format", "text",
+    ]
+
+    if system_prompt:
+        cmd.extend(["--system-prompt", system_prompt])
+
+    logger.debug(f"Running: claude -p '<prompt>' --model {model}")
+
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        timeout=300,  # 5 minute timeout per agent call
+    )
+
+    if result.returncode != 0:
+        logger.error(f"Claude CLI error: {result.stderr}")
+        raise RuntimeError(f"Claude CLI failed (exit {result.returncode}): {result.stderr}")
+
+    return result.stdout.strip()
+
+
+class BaseAgent(ABC):
+    """Abstract base class — each sub-agent invokes `claude` CLI.
+
+    Every agent is a real Claude sub-agent that runs via the `claude`
+    command-line tool installed on the user's terminal. No API key
+    needed — uses the existing Claude Code authentication.
     """
 
     def __init__(
@@ -137,17 +131,14 @@ class BaseAgent(ABC):
         role: AgentRole,
         name: str,
         expertise: list[str],
-        model: str = "claude-sonnet-4-6",
-        max_tokens: int = 4096,
+        model: str = "sonnet",
     ):
         self.id = str(uuid.uuid4())[:8]
         self.role = role
         self.name = name
         self.expertise = expertise
         self.model = model
-        self.max_tokens = max_tokens
         self.conversation_history: list[dict[str, str]] = []
-        self.client = anthropic.Anthropic()
 
     @property
     @abstractmethod
@@ -159,10 +150,10 @@ class BaseAgent(ABC):
         """Build the user-facing prompt from the current project context."""
 
     def invoke(self, context: dict[str, Any]) -> AgentResponse:
-        """Invoke this Claude sub-agent via the Anthropic API.
+        """Invoke this Claude sub-agent via `claude` CLI.
 
-        This is the core method — it calls the Claude API with the agent's
-        system prompt and context, then parses the structured JSON response.
+        Runs the `claude -p` command with the agent's system prompt
+        and parses the structured JSON response.
         """
         user_prompt = self.build_user_prompt(context)
 
@@ -180,28 +171,35 @@ class BaseAgent(ABC):
             "Return ONLY valid JSON, no markdown fencing."
         )
 
-        messages = list(self.conversation_history)
-        messages.append({"role": "user", "content": structured_prompt})
+        # Include conversation history in the prompt for multi-turn debates
+        if self.conversation_history:
+            history_text = "\n\n".join(
+                f"[{msg['role'].upper()}]: {msg['content'][:500]}"
+                for msg in self.conversation_history[-4:]  # Last 2 exchanges
+            )
+            structured_prompt = (
+                f"Previous conversation context:\n{history_text}\n\n"
+                f"---\n\nCurrent task:\n{structured_prompt}"
+            )
 
-        logger.info(f"[{self.name}] Invoking Claude sub-agent ({self.model})...")
+        logger.info(f"[{self.name}] Invoking via `claude` CLI ({self.model})...")
 
-        response = self.client.messages.create(
+        raw_text = invoke_claude_cli(
+            prompt=structured_prompt,
+            system_prompt=self.system_prompt,
             model=self.model,
-            max_tokens=self.max_tokens,
-            system=self.system_prompt,
-            messages=messages,
         )
 
-        raw_text = response.content[0].text
-
         # Record in conversation history for multi-turn debates
-        self.conversation_history.append({"role": "user", "content": structured_prompt})
+        self.conversation_history.append({"role": "user", "content": user_prompt})
         self.conversation_history.append({"role": "assistant", "content": raw_text})
+
+        logger.info(f"[{self.name}] Response received ({len(raw_text)} chars)")
 
         return self._parse_response(raw_text, context)
 
     def challenge(self, proposal: str, context: dict[str, Any]) -> AgentResponse:
-        """Challenge another agent's proposal via a Claude API call."""
+        """Challenge another agent's proposal via `claude` CLI."""
         challenge_prompt = (
             f"As {self.name} ({self.role.value}), critically evaluate this proposal "
             f"from your colleagues:\n\n{proposal}\n\n"
@@ -231,8 +229,8 @@ class BaseAgent(ABC):
     def _parse_response(self, raw_text: str, context: dict[str, Any]) -> AgentResponse:
         """Parse Claude's response into a structured AgentResponse."""
         try:
-            # Try to extract JSON from the response
             text = raw_text.strip()
+            # Strip markdown code fences if present
             if text.startswith("```"):
                 text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
 

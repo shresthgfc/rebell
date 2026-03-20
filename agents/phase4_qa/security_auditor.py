@@ -14,7 +14,7 @@ class SecurityAuditor(BaseAgent):
     review auth flows, and identify injection points.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.SECURITY_AUDITOR,
             name="Security Auditor",

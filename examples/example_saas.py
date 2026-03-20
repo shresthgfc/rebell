@@ -65,7 +65,7 @@ def main() -> None:
     # Create and run the full pipeline
     pipeline = PipelineFactory.create(
         preset="full",
-        model="claude-sonnet-4-6",
+        model="sonnet",
         max_debate_rounds=2,
         consensus_threshold=0.75,
     )

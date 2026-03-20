@@ -58,7 +58,7 @@ class PipelineFactory:
     @staticmethod
     def create(
         preset: str = "full",
-        model: str = "claude-sonnet-4-6",
+        model: str = "sonnet",
         max_debate_rounds: int | None = None,
         consensus_threshold: float = 0.75,
     ) -> Orchestrator:

@@ -14,7 +14,7 @@ class AccessibilityTester(BaseAgent):
     plan screen reader testing, and audit keyboard navigation.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.ACCESSIBILITY_TESTER,
             name="Accessibility Tester",

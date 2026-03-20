@@ -14,7 +14,7 @@ class SystemArchitect(BaseAgent):
     Architecture Decision Records, and technology stack selections.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.SYSTEM_ARCHITECT,
             name="System Architect",

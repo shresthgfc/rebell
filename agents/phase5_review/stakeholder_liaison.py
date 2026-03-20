@@ -14,7 +14,7 @@ class StakeholderLiaison(BaseAgent):
     ROI analyses, and stakeholder-ready presentations.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.STAKEHOLDER_LIAISON,
             name="Stakeholder Liaison",

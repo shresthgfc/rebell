@@ -1,20 +1,16 @@
 """Top-level orchestrator — runs the full Claude sub-agent pipeline.
 
-The Orchestrator is the 'CEO' that coordinates all Claude sub-agents
+The Orchestrator coordinates all Claude sub-agents (invoked via `claude` CLI)
 through discovery, architecture, implementation, QA, and review phases.
-Each phase involves real Claude API calls and structured debates.
 """
 
 from __future__ import annotations
 
-import json
 import logging
 import time
 from typing import Any, Callable
 
-import anthropic
-
-from core.base_agent import AgentResponse, BaseAgent
+from core.base_agent import AgentResponse, BaseAgent, invoke_claude_cli
 from core.context import PhaseResult, ProjectContext
 from core.debate import DebateArena
 
@@ -44,20 +40,20 @@ class Phase:
 class Orchestrator:
     """Runs the full multi-agent software development lifecycle.
 
-    Each phase runs a debate between specialized Claude sub-agents.
-    A synthesizer sub-agent merges the debate results into a cohesive
-    deliverable before passing to the next phase.
+    Each phase runs debates between specialized Claude sub-agents
+    invoked via the `claude` CLI. A synthesizer call merges the
+    debate results into a cohesive deliverable before the next phase.
+    No API key needed — uses existing Claude Code authentication.
     """
 
     def __init__(
         self,
         phases: list[Phase] | None = None,
-        synthesizer_model: str = "claude-sonnet-4-6",
+        synthesizer_model: str = "sonnet",
     ):
         self.phases: list[Phase] = phases or []
         self.context: ProjectContext | None = None
         self.synthesizer_model = synthesizer_model
-        self.client = anthropic.Anthropic()
 
     def add_phase(self, phase: Phase) -> None:
         self.phases.append(phase)
@@ -125,7 +121,7 @@ class Orchestrator:
         context_dict = {**self.context.to_dict(), "_phase": phase.name}
         debate_result = arena.run_debate(phase.agents, context_dict, topic)
 
-        # Synthesize debate results via another Claude sub-agent call
+        # Synthesize debate results via another `claude` CLI call
         synthesis = self._synthesize_phase(phase, debate_result.final_proposals)
 
         # Merge artifacts
@@ -158,7 +154,7 @@ class Orchestrator:
         logger.info(f"  Phase '{phase.name}' completed in {duration:.1f}s")
 
     def _synthesize_phase(self, phase: Phase, proposals: list[AgentResponse]) -> str:
-        """Use a Claude sub-agent to synthesize all debate outputs into one cohesive document."""
+        """Use a `claude` CLI call to synthesize all debate outputs."""
         proposals_text = "\n\n---\n\n".join(
             f"## {p.agent_role.value} (confidence: {p.confidence:.2f})\n\n"
             f"{p.content}\n\n"
@@ -167,28 +163,22 @@ class Orchestrator:
             for p in proposals
         )
 
-        response = self.client.messages.create(
-            model=self.synthesizer_model,
-            max_tokens=4096,
-            system=(
-                "You are a senior Technical Program Manager synthesizing outputs from "
-                "multiple specialist sub-agents into a single cohesive deliverable. "
-                "Merge overlapping insights, resolve conflicts, and produce an "
-                "actionable summary that downstream teams can execute on."
-            ),
-            messages=[{
-                "role": "user",
-                "content": (
-                    f"# Phase: {phase.name}\n\n"
-                    f"## Description: {phase.description}\n\n"
-                    f"Synthesize these specialist outputs into one cohesive document:\n\n"
-                    f"{proposals_text}\n\n"
-                    "Produce a unified, non-redundant summary with clear action items."
-                ),
-            }],
+        prompt = (
+            f"# Phase: {phase.name}\n\n"
+            f"## Description: {phase.description}\n\n"
+            f"Synthesize these specialist outputs into one cohesive document:\n\n"
+            f"{proposals_text}\n\n"
+            "Produce a unified, non-redundant summary with clear action items."
         )
 
-        return response.content[0].text
+        system = (
+            "You are a senior Technical Program Manager synthesizing outputs from "
+            "multiple specialist sub-agents into a single cohesive deliverable. "
+            "Merge overlapping insights, resolve conflicts, and produce an "
+            "actionable summary that downstream teams can execute on."
+        )
+
+        return invoke_claude_cli(prompt=prompt, system_prompt=system, model=self.synthesizer_model)
 
     def _final_synthesis(self) -> None:
         """Final cross-phase synthesis to produce the complete deliverable."""
@@ -200,31 +190,26 @@ class Orchestrator:
             for name, result in self.context.phase_results.items()
         )
 
-        response = self.client.messages.create(
-            model=self.synthesizer_model,
-            max_tokens=8192,
-            system=(
-                "You are the Chief Technical Officer reviewing the complete output "
-                "of a multi-phase development planning process. Produce a final "
-                "executive summary with key decisions, risks, and next steps."
-            ),
-            messages=[{
-                "role": "user",
-                "content": (
-                    f"# Project: {self.context.project_name}\n\n"
-                    f"## Requirements:\n{self.context.client_requirements}\n\n"
-                    f"## Phase Results:\n{phase_summaries}\n\n"
-                    "Produce:\n"
-                    "1. Executive summary\n"
-                    "2. Key architectural decisions\n"
-                    "3. Critical risks and mitigations\n"
-                    "4. Implementation roadmap\n"
-                    "5. Success metrics"
-                ),
-            }],
+        prompt = (
+            f"# Project: {self.context.project_name}\n\n"
+            f"## Requirements:\n{self.context.client_requirements}\n\n"
+            f"## Phase Results:\n{phase_summaries}\n\n"
+            "Produce:\n"
+            "1. Executive summary\n"
+            "2. Key architectural decisions\n"
+            "3. Critical risks and mitigations\n"
+            "4. Implementation roadmap\n"
+            "5. Success metrics"
         )
 
-        self.context.review_report["final_synthesis"] = response.content[0].text
+        system = (
+            "You are the Chief Technical Officer reviewing the complete output "
+            "of a multi-phase development planning process. Produce a final "
+            "executive summary with key decisions, risks, and next steps."
+        )
+
+        result = invoke_claude_cli(prompt=prompt, system_prompt=system, model=self.synthesizer_model)
+        self.context.review_report["final_synthesis"] = result
 
     def _default_topic(self, phase: Phase) -> str:
         prev_summaries = ""

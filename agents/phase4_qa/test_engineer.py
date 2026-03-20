@@ -14,7 +14,7 @@ class TestEngineer(BaseAgent):
     and BDD-style acceptance tests.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.TEST_ENGINEER,
             name="Test Engineer",

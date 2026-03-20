@@ -14,7 +14,7 @@ class SecurityArchitect(BaseAgent):
     design auth systems, and plan security monitoring.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.SECURITY_ARCHITECT,
             name="Security Architect",

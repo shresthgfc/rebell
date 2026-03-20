@@ -14,7 +14,7 @@ class BackendDeveloper(BaseAgent):
     patterns, service layer structure, and error handling strategies.
     """
 
-    def __init__(self, model: str = "claude-sonnet-4-6"):
+    def __init__(self, model: str = "sonnet"):
         super().__init__(
             role=AgentRole.BACKEND_DEVELOPER,
             name="Backend Developer",

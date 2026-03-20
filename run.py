@@ -4,7 +4,7 @@
 Usage:
     python run.py --requirements "Build a SaaS project management tool"
     python run.py --requirements-file requirements.txt --preset full
-    python run.py --requirements "Build an API" --preset lean --model claude-haiku-4-5-20251001
+    python run.py --requirements "Build an API" --preset lean --model haiku
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ Examples:
   python run.py --requirements-file requirements.txt --preset full
 
   # Custom model and debate settings
-  python run.py --requirements "Build a CRM" --model claude-sonnet-4-6 --debate-rounds 2
+  python run.py --requirements "Build a CRM" --model opus --debate-rounds 2
         """,
     )
 
@@ -77,8 +77,8 @@ Examples:
     parser.add_argument(
         "--model", "-m",
         type=str,
-        default="claude-sonnet-4-6",
-        help="Claude model to use (default: claude-sonnet-4-6)",
+        default="sonnet",
+        help="Claude CLI model name: sonnet, opus, haiku (default: sonnet)",
     )
     parser.add_argument(
         "--debate-rounds",

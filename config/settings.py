@@ -9,9 +9,9 @@ from dataclasses import dataclass, field
 class PipelineConfig:
     """Configuration for running the pipeline."""
 
-    # Model configuration
-    model: str = "claude-sonnet-4-6"
-    synthesizer_model: str = "claude-sonnet-4-6"
+    # Model configuration — uses `claude` CLI model names
+    model: str = "sonnet"
+    synthesizer_model: str = "sonnet"
     max_tokens: int = 4096
 
     # Pipeline preset: "full", "standard", "lean"
@@ -38,7 +38,7 @@ class PipelineConfig:
     def enterprise(cls) -> PipelineConfig:
         """Enterprise preset: thorough, all agents, max debate."""
         return cls(
-            model="claude-sonnet-4-6",
+            model="sonnet",
             preset="full",
             max_debate_rounds=3,
             consensus_threshold=0.80,
@@ -49,7 +49,7 @@ class PipelineConfig:
     def startup(cls) -> PipelineConfig:
         """Startup preset: lean, fast, essential agents only."""
         return cls(
-            model="claude-sonnet-4-6",
+            model="sonnet",
             preset="lean",
             max_debate_rounds=1,
             consensus_threshold=0.65,
@@ -61,7 +61,7 @@ class PipelineConfig:
     def standard(cls) -> PipelineConfig:
         """Standard preset: balanced coverage and speed."""
         return cls(
-            model="claude-sonnet-4-6",
+            model="sonnet",
             preset="standard",
             max_debate_rounds=2,
             consensus_threshold=0.75,
