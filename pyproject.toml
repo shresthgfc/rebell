@@ -1,0 +1,11 @@
+[project]
+name = "rebell"
+version = "1.0.0"
+description = "Multi-Agent Development Organization — 25 Claude sub-agents that brainstorm, debate, design, implement, test, and review software projects."
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.40.0",
+]
+
+[project.scripts]
+rebell = "run:main"
