@@ -53,6 +53,13 @@ All officially defined sub-agents in this development organization.
 | Release Manager | `release-manager.md` | `output/release-plan.md` | Go/no-go, <5min rollback |
 | Stakeholder Liaison | `stakeholder-liaison.md` | `output/stakeholder-report.md` | Business language |
 
+## Cross-Cutting Agents (run after every phase)
+
+| Agent | File | Output | Authority |
+|-------|------|--------|-----------|
+| Governance Reviewer | `governance-reviewer.md` | `output/governance-review-phase-{N}.md` | **BLOCKING** — can halt pipeline |
+| Standards Librarian | `standards-librarian.md` | `output/standards-review.md` | Advisory — flags inconsistencies |
+
 ## Meta-Agents
 
 | Agent | File | Output | Purpose |

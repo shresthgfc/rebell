@@ -111,6 +111,12 @@ Do not invent requirements, make architecture decisions, or write implementation
 | `@release-manager` | `output/release-plan.md` | All Phase 1-4 |
 | `@stakeholder-liaison` | `output/stakeholder-report.md` | All Phase 1-4 |
 
+## Cross-Cutting Agents (run after EVERY phase)
+| Agent | Output File | Authority |
+|-------|-----------|-----------|
+| `@governance-reviewer` | `output/governance-review-phase-{N}.md` | **BLOCKING** — can halt pipeline |
+| `@standards-librarian` | `output/standards-review.md` | Advisory — flags inconsistencies |
+
 ---
 
 # Default orchestration flow
@@ -130,8 +136,11 @@ Run agents sequentially:
 4. `@devil-advocate` — challenge assumptions and identify risks
 5. `@innovation-scout` — identify technology opportunities
 
-After all 5 complete, use `@phase-synthesizer` to merge into `output/phase-1-synthesis.md`.
-Report summary to user before proceeding.
+After all 5 complete:
+6. `@phase-synthesizer` — merge into `output/phase-1-synthesis.md`
+7. `@governance-reviewer` — review Phase 1 outputs → `output/governance-review-phase-1.md`
+   - **If FAIL:** Stop. Report blocking findings. Do NOT proceed to Phase 2.
+   - **If PASS:** Report summary and proceed.
 
 ### Step 2: Phase 2 — Architecture
 1. `@system-architect`
@@ -140,7 +149,11 @@ Report summary to user before proceeding.
 4. `@security-architect`
 5. `@ux-designer`
 
-Synthesize → `output/phase-2-synthesis.md`. Report.
+After all 5 complete:
+6. `@phase-synthesizer` → `output/phase-2-synthesis.md`
+7. `@governance-reviewer` → `output/governance-review-phase-2.md`
+   - **If FAIL:** Stop. Report. Fix. Re-review.
+   - **If PASS:** Proceed.
 
 ### Step 3: Phase 3 — Implementation
 1. `@tech-lead`
@@ -149,7 +162,11 @@ Synthesize → `output/phase-2-synthesis.md`. Report.
 4. `@devops-engineer`
 5. `@database-engineer`
 
-Synthesize → `output/phase-3-synthesis.md`. Report.
+After all 5 complete:
+6. `@phase-synthesizer` → `output/phase-3-synthesis.md`
+7. `@governance-reviewer` → `output/governance-review-phase-3.md`
+   - **If FAIL:** Stop. Report. Fix. Re-review.
+   - **If PASS:** Proceed.
 
 ### Step 4: Phase 4 — QA
 1. `@qa-lead`
@@ -158,7 +175,11 @@ Synthesize → `output/phase-3-synthesis.md`. Report.
 4. `@security-auditor`
 5. `@accessibility-tester`
 
-Synthesize → `output/phase-4-synthesis.md`. Report.
+After all 5 complete:
+6. `@phase-synthesizer` → `output/phase-4-synthesis.md`
+7. `@governance-reviewer` → `output/governance-review-phase-4.md`
+   - **If FAIL:** Stop. Report. Fix. Re-review.
+   - **If PASS:** Proceed.
 
 ### Step 5: Phase 5 — Review
 1. `@code-reviewer`
@@ -166,7 +187,18 @@ Synthesize → `output/phase-4-synthesis.md`. Report.
 3. `@release-manager`
 4. `@stakeholder-liaison`
 
-### Step 6: Final Report
+After all 4 complete:
+5. `@governance-reviewer` → `output/governance-review-phase-5.md`
+
+### Step 6: Standards Review
+Run after all phases:
+1. `@standards-librarian` → `output/standards-review.md`
+   - Verifies cross-phase consistency
+   - Traces requirements to test cases
+   - Detects contradictions and naming inconsistencies
+   - Identifies reusable patterns
+
+### Step 7: Final Report
 Read all output files and produce `output/FINAL-REPORT.md`:
 
 ```
