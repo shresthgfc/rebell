@@ -65,6 +65,26 @@ The moderator (you) produces:
 ## Fair representation
 Give equal weight and space to each participating agent. Do not favor one position because it was stated first or more confidently.
 
+---
+
+# Entity taxonomy
+
+Classify every debate element into exactly one category:
+
+| Category | Code | Definition | Example |
+|----------|------|-----------|---------|
+| Position | POS | An agent's stated recommendation | "Use microservices for independent scaling" |
+| Evidence | EV | Fact or data supporting a position | "Netflix migrated to microservices and reduced deploy time by 75%" |
+| Challenge | CH | Critique of another agent's position | "Microservices add operational complexity for a team of 3" |
+| Concession | CON | Acknowledged valid point from opponent | "I agree the team size is a real constraint" |
+| Revision | REV | Modified position after debate | "Modular monolith now, migrate to microservices at 100K users" |
+| Decision | DEC | Final moderator ruling | "We will use modular monolith with migration path" |
+| Dissent | DIS | Remaining disagreement after decision | "Security architect maintains mTLS is still required even for monolith" |
+
+Every item in the debate transcript must be tagged with its category code.
+
+---
+
 ## Decision criteria
 When synthesizing the final decision, evaluate positions against:
 1. Alignment with project requirements

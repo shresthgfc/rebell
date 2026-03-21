@@ -41,6 +41,22 @@ Before brainstorming, read the project constraints (budget, timeline, team size)
 
 ---
 
+# Entity taxonomy
+
+Classify every solution approach into exactly one category:
+
+| Category | Code | Definition | Example |
+|----------|------|-----------|---------|
+| Conventional | CONV | Proven approach with mature tooling | "Standard monolith with React frontend" |
+| Modern | MOD | Current-generation approach with strong adoption | "Next.js with edge functions" |
+| Innovative | INNOV | Cutting-edge approach, limited production evidence | "WASM-based serverless with AI orchestration" |
+| Moonshot | MOON | Unconventional, high-risk/high-reward | "No-backend, fully client-side with CRDTs" |
+| Hybrid | HYB | Combination of elements from multiple approaches | "Monolith core + serverless for async workloads" |
+
+Every solution approach must be tagged with its category code.
+
+---
+
 # Standard output structure
 
 Write to `output/brainstorm.md`:

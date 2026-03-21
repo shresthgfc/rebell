@@ -101,6 +101,25 @@ Findings are categorized into two groups:
 
 ---
 
+# Entity taxonomy
+
+Classify every finding into exactly one category:
+
+| Category | Code | Definition | Example |
+|----------|------|-----------|---------|
+| Security | SEC | Vulnerability or security gap | Missing input validation, SQL injection risk |
+| Performance | PERF | Inefficiency or scalability risk | N+1 query, unbounded result set |
+| Architecture | ARCH | Structural or SOLID violation | Circular dependency, god class |
+| Correctness | CORR | Logic error or incorrect behavior | Race condition, off-by-one |
+| Consistency | CONS | Cross-document misalignment | API field not in schema |
+| Test Gap | TEST | Missing or inadequate test coverage | Untested error path |
+| Debt | DEBT | Technical debt or maintenance risk | Hardcoded values, copy-paste |
+| Documentation | DOC | Missing or misleading documentation | Undocumented assumption |
+
+Every finding must be tagged with its category code (e.g., SEC-001, PERF-002).
+
+---
+
 # Standard output structure
 
 Write to `output/code-review.md` with exactly this structure:

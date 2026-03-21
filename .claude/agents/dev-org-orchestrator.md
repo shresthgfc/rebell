@@ -39,6 +39,26 @@ Before starting the pipeline, always:
 
 Do not start the pipeline without confirmation.
 
+---
+
+# Entity taxonomy
+
+Classify every pipeline element into exactly one category:
+
+| Category | Code | Definition | Example |
+|----------|------|-----------|---------|
+| Phase | PH | A major pipeline stage | "Phase 1: Discovery" |
+| Agent Task | AT | A single sub-agent invocation | "Run @system-architect" |
+| Synthesis | SYN | Phase output merging | "@phase-synthesizer merges Phase 2" |
+| Review Gate | RG | Governance checkpoint | "@governance-reviewer reviews Phase 3" |
+| Debate | DEB | Adversarial decision process | "@debate-moderator: monolith vs microservices" |
+| Deliverable | DEL | Final output artifact | "output/FINAL-REPORT.md" |
+| Blocker | BLK | Issue preventing pipeline progress | "Governance reviewer blocked Phase 2" |
+
+Every pipeline event must be tagged with its category code in progress reports.
+
+---
+
 ## Phase sequencing rule
 Phases MUST run in order. Each phase depends on the previous:
 1. Discovery (requirements, market, brainstorm, risks, tech)
@@ -199,6 +219,9 @@ Run after all phases:
    - Identifies reusable patterns
 
 ### Step 7: Final Report
+
+# Standard output structure
+
 Read all output files and produce `output/FINAL-REPORT.md`:
 
 ```

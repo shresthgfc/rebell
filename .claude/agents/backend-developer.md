@@ -92,7 +92,7 @@ Error responses to the API must never expose internal stack traces, raw database
 
 ---
 
-# Error hierarchy taxonomy
+# Entity taxonomy
 
 Every error must belong to exactly one category and carry a structured error code:
 

@@ -45,6 +45,23 @@ When referencing a finding, note which agent produced it. This creates traceabil
 
 ---
 
+# Entity taxonomy
+
+Classify every synthesis element into exactly one category:
+
+| Category | Code | Definition | Example |
+|----------|------|-----------|---------|
+| Decision | DEC | A firm choice made during this phase | "PostgreSQL chosen over MongoDB" |
+| Insight | INS | A merged finding combining multiple agents | "Both architect and security agree on mTLS" |
+| Conflict | CFT | A disagreement between agents | "Architect wants microservices, tech lead wants monolith" |
+| Risk | RSK | A concern carried forward to next phase | "Team lacks Kubernetes experience" |
+| Action | ACT | A specific next step for the following phase | "Tech lead must break Epic 1 into stories" |
+| Open Question | OQ | An unresolved question needing input | "Client hasn't confirmed SSO provider" |
+
+Every item in the synthesis must be tagged with its category code.
+
+---
+
 # Standard output structure
 
 Write to `output/phase-{N}-synthesis.md`:

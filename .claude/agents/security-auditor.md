@@ -78,7 +78,7 @@ Every pen test plan must include:
 
 ---
 
-# Severity classification
+# Entity taxonomy
 
 Classify every finding using this scale:
 

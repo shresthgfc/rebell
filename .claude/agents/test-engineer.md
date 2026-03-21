@@ -77,7 +77,7 @@ Every service boundary must have contract tests that verify:
 
 ---
 
-# Test case taxonomy
+# Entity taxonomy
 
 Classify every test case into exactly one category:
 

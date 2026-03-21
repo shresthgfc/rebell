@@ -87,7 +87,7 @@ Every project must define and enforce these budgets:
 
 ---
 
-# Component classification taxonomy
+# Entity taxonomy
 
 Every component must be classified into exactly one category:
 

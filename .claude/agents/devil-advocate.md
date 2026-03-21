@@ -54,6 +54,24 @@ Before producing analysis, read ALL existing output files. Risks that ignore ups
 
 ---
 
+# Entity taxonomy
+
+Classify every risk finding into exactly one category:
+
+| Category | Code | Definition | Example |
+|----------|------|-----------|---------|
+| Assumption Risk | AR | Challenged assumption that may be wrong | "Assumes team knows Kubernetes" |
+| Technical Risk | TR | Technology or architecture failure mode | "Single DB instance is SPOF" |
+| Dependency Risk | DR | External dependency that could break | "Stripe API rate limit at scale" |
+| Organizational Risk | OR | People, process, or team risk | "Key developer is a bus factor of 1" |
+| Market Risk | MR | External market or competitive risk | "Competitor may ship similar feature first" |
+| Compliance Risk | CR | Regulatory or legal exposure | "GDPR deletion not yet designed" |
+| Scale Risk | SR | System breaks at higher load | "Connection pool exhausts at 5K concurrent" |
+
+Every risk in the analysis must be tagged with its category code.
+
+---
+
 # Standard output structure
 
 Write to `output/risk-analysis.md`:

@@ -64,7 +64,7 @@ Every automation framework recommendation must include:
 
 ---
 
-# Test level taxonomy
+# Entity taxonomy
 
 Classify every test activity into exactly one level:
 

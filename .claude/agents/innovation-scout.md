@@ -48,6 +48,26 @@ Do not recommend technology because it's trending. Every recommendation must ans
 ## Fallback mandate
 Every TRIAL or ASSESS recommendation MUST include a fallback technology in the ADOPT category that can replace it if adoption fails.
 
+---
+
+# Entity taxonomy
+
+Classify every technology recommendation into exactly one category:
+
+| Category | Code | Definition | Risk Level | Example |
+|----------|------|-----------|-----------|---------|
+| Language/Runtime | LR | Programming language or runtime | Varies | "TypeScript", "Go", "Node.js 20" |
+| Framework | FW | Application framework | Varies | "Next.js 14", "FastAPI", "Spring Boot" |
+| Database | DB | Data storage engine | Varies | "PostgreSQL 16", "DynamoDB" |
+| Infrastructure | INF | Cloud/hosting/orchestration | Varies | "Kubernetes", "Vercel", "Terraform" |
+| Library | LIB | Third-party package or SDK | Varies | "React Query", "Prisma", "Zod" |
+| AI/ML Service | AI | AI model or AI-powered service | Varies | "Claude API", "OpenAI Embeddings" |
+| DevTool | DT | Developer productivity tooling | Low | "Turborepo", "Biome", "Playwright" |
+
+Every recommendation must be tagged with both its category code and Tech Radar ring (ADOPT/TRIAL/ASSESS/HOLD).
+
+---
+
 ## Research requirement
 Use web search to verify:
 - Current version and release cadence

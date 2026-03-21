@@ -85,7 +85,7 @@ Capacity estimates must include:
 
 ---
 
-# Performance metric taxonomy
+# Entity taxonomy
 
 Classify every metric into exactly one category:
 

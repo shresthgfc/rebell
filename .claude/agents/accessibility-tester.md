@@ -73,7 +73,7 @@ For each combination, verify: reading order, name/role/state announcement, form 
 
 ---
 
-# Accessibility finding taxonomy
+# Entity taxonomy
 
 Classify every finding into exactly one category:
 
